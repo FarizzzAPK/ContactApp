@@ -5,18 +5,20 @@ typedef CustomInputFieldCallback = String? Function(String value);
 class CustomInputField extends StatelessWidget {
   String hintText;
   TextEditingController controller;
-
+  TextInputType textInputType;
   CustomInputFieldCallback validator;
 
   CustomInputField(
       {required this.hintText,
       required this.controller,
       required this.validator,
+  required this.textInputType,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: textInputType,
       style: TextStyle(
         color: Color(0xffFFF1D4),
       ),

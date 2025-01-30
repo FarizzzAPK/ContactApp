@@ -1,3 +1,6 @@
+import 'package:contactf/contactCard.dart';
+import 'package:contactf/contactModel.dart';
+import 'package:contactf/noContacts.dart';
 import 'package:contactf/splashscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,54 +16,93 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  void _showModalBottunSheet() async {
+    final result = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Color(0xff29384D),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(16),
+          topLeft: Radius.circular(16),
+        ),
+      ),
+      builder: (context) => Enteringdata(),
+    );
+
+    // If a new contact was added, update the UI
+    if (result == true) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: Color(0xff29384D),
-      body: Stack(
+      body: Column(
         children: [
-          Positioned(
-            top: 16,
-            left: 16,
-            height: 39,
-            width: 117,
-            child: RouteImage(117, 39),
-          ),
-
-          Center(
-            child: Lottie.asset(
-              'assets/Lottie/empty_list.json',
-              width: 368,
-              height: 368,
-              fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.only(top: 40,left: 24),
+            child: Row(
+              children: [
+                RouteImage(117, 39),
+              ],
             ),
           ),
-
-          Positioned(
-            width: MediaQuery.of(context).size.width,
-            bottom: MediaQuery.of(context).size.height * 0.3,
-            child: const Text(
-              "There is No Contacts Added Here",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xffFFF1D4),
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
+          // Wrap the GridView.builder in Expanded
+          Expanded(
+            child: Contactmodel.Contacts.isEmpty
+                ? Nocontacts()
+                : Padding(
+              padding: const EdgeInsets.all(16),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.7,
+                ),
+                itemCount: Contactmodel.Contacts.length,
+                itemBuilder: (context, index) => Contactcard(
+                  contact: Contactmodel.Contacts[index],
+                  index: index,
+                  callBackClick: (int index) {
+                    Contactmodel.Contacts.removeAt(index);
+                    setState(() {});
+                  },
+                ),
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        showDialog(
-          context: context,
-          builder: (context) {
-
-            return Enteringdata();
-          },
-        );
-      },child: Icon(Icons.add,color: Color(0xff29384D),),backgroundColor: Color(0xffFFF1D4),),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Visibility(
+            visible: Contactmodel.Contacts.isNotEmpty,
+            child: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  Contactmodel.Contacts.removeAt(Contactmodel.Contacts.length - 1);
+                });
+              },
+              child: Icon(Icons.delete, color: Color(0xffffffff)),
+              backgroundColor: Color(0xffF93E3E),
+            ),
+          ),
+          SizedBox(height: 8),
+          Visibility(
+            visible: Contactmodel.Contacts.length <= 5,
+            child: FloatingActionButton(
+              onPressed: _showModalBottunSheet,
+              child: Icon(Icons.add, color: Color(0xff29384D)),
+              backgroundColor: Color(0xffFFF1D4),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

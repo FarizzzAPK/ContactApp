@@ -13,7 +13,7 @@ class Enteringdata extends StatefulWidget {
   @override
   State<Enteringdata> createState() => _EnteringdataState();
 
-  void onAddContact() {}
+  void newcontact() {}
 }
 
 class _EnteringdataState extends State<Enteringdata> {
@@ -43,7 +43,7 @@ class _EnteringdataState extends State<Enteringdata> {
     final image = await _imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        _pickedImage = File(image.path); // Convert XFile to File
+        _pickedImage = File(image.path);
       });
     }
   }
@@ -54,9 +54,7 @@ class _EnteringdataState extends State<Enteringdata> {
       child: Container(
         decoration: BoxDecoration(
           color: const Color(0xff29384D),
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(20),
-          ),
+
         ),
         child: SingleChildScrollView(
           child: Form(
@@ -180,6 +178,7 @@ class _EnteringdataState extends State<Enteringdata> {
                   ),
                   SizedBox(height: 16),
                   CustomInputField(
+                    textInputType: TextInputType.name,
                     controller: UserNameController,
                     hintText: "Enter User Name",
                     validator: (value) =>
@@ -187,6 +186,7 @@ class _EnteringdataState extends State<Enteringdata> {
                   ),
                   SizedBox(height: 8),
                   CustomInputField(
+                    textInputType: TextInputType.emailAddress,
                     controller: EmailController,
                     hintText: "Enter User Email",
                     validator: (value) {
@@ -201,6 +201,7 @@ class _EnteringdataState extends State<Enteringdata> {
                   ),
                   SizedBox(height: 8),
                   CustomInputField(
+                    textInputType: TextInputType.phone,
                     controller: PhoneNumberController,
                     hintText: "Enter User Phone",
                     validator: (value) =>
@@ -214,7 +215,9 @@ class _EnteringdataState extends State<Enteringdata> {
                       ),
                     ),
                     onPressed: () {
-                      addContactItem();
+                      newcontact();
+                      print(Contactmodel.Contacts);
+
                     },
                     child: Text(
                       "Enter user",
@@ -234,8 +237,20 @@ class _EnteringdataState extends State<Enteringdata> {
     );
   }
 
-  void addContactItem() {
+  void newcontact() {
     if (formKey.currentState!.validate()) {
+      if (_pickedImage == null) {
+        // Show an error if no image is selected
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Please select an image"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Add the new contact
       Contactmodel.Contacts.add(
         Contactmodel(
           username: UserNameController.text,
@@ -244,8 +259,9 @@ class _EnteringdataState extends State<Enteringdata> {
           image: _pickedImage,
         ),
       );
+
+      // Notify the Homescreen to update the UI
+      Navigator.pop(context, true); // Pass `true` to indicate a new contact was added
     }
-    widget.onAddContact();
-    Navigator.pop(context);
   }
 }
