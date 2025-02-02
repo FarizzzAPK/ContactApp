@@ -4,8 +4,6 @@ import 'package:contactf/noContacts.dart';
 import 'package:contactf/splashscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-
 import 'enteringData.dart';
 
 class Homescreen extends StatefulWidget {
@@ -21,16 +19,8 @@ class _HomescreenState extends State<Homescreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Color(0xff29384D),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-        ),
-      ),
       builder: (context) => Enteringdata(),
     );
-
-    // If a new contact was added, update the UI
     if (result == true) {
       setState(() {});
     }
@@ -50,7 +40,6 @@ class _HomescreenState extends State<Homescreen> {
               ],
             ),
           ),
-          // Wrap the GridView.builder in Expanded
           Expanded(
             child: Contactmodel.Contacts.isEmpty
                 ? Nocontacts()

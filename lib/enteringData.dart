@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
-
 import 'CustomInputField.dart';
 import 'contactModel.dart';
 
@@ -17,7 +15,6 @@ class Enteringdata extends StatefulWidget {
 }
 
 class _EnteringdataState extends State<Enteringdata> {
-  // Controllers
   late TextEditingController UserNameController;
   late TextEditingController EmailController;
   late TextEditingController PhoneNumberController;
@@ -51,17 +48,28 @@ class _EnteringdataState extends State<Enteringdata> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:  MediaQuery.of(context).viewInsets,      child: Material(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Material(
+        color: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
             color: const Color(0xff29384D),
-
+            border: Border(
+              top: BorderSide(
+                width: 10,
+                color: Color(0xff29384D),
+              ),
+            ),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
           ),
           child: SingleChildScrollView(
             child: Form(
               key: formKey,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -109,9 +117,7 @@ class _EnteringdataState extends State<Enteringdata> {
                                   valueListenable: UserNameController,
                                   builder: (context, value, child) {
                                     return Text(
-                                      value.text.isEmpty
-                                          ? "User Name"
-                                          : value.text,
+                                      value.text.isEmpty ? "User Name" : value.text,
                                       style: TextStyle(
                                         color: Color(0xFFFDF6E3),
                                         fontSize: 16,
@@ -135,9 +141,7 @@ class _EnteringdataState extends State<Enteringdata> {
                                   valueListenable: EmailController,
                                   builder: (context, value, child) {
                                     return Text(
-                                      value.text.isEmpty
-                                          ? "Email"
-                                          : value.text,
+                                      value.text.isEmpty ? "Email" : value.text,
                                       style: TextStyle(
                                         color: Color(0xFFFDF6E3),
                                         fontSize: 16,
@@ -161,9 +165,7 @@ class _EnteringdataState extends State<Enteringdata> {
                                   valueListenable: PhoneNumberController,
                                   builder: (context, value, child) {
                                     return Text(
-                                      value.text.isEmpty
-                                          ? "+200000000000"
-                                          : value.text,
+                                      value.text.isEmpty ? "+200000000000" : value.text,
                                       style: TextStyle(
                                         color: Color(0xFFFDF6E3),
                                         fontSize: 16,
@@ -184,8 +186,7 @@ class _EnteringdataState extends State<Enteringdata> {
                       textInputType: TextInputType.name,
                       controller: UserNameController,
                       hintText: "Enter User Name",
-                      validator: (value) =>
-                      value.isEmpty ? "Enter Your name" : null,
+                      validator: (value) => value.isEmpty ? "Enter Your name" : null,
                     ),
                     SizedBox(height: 8),
                     CustomInputField(
@@ -195,9 +196,7 @@ class _EnteringdataState extends State<Enteringdata> {
                       validator: (value) {
                         if (value.isEmpty) {
                           return "Enter User Email";
-                        } else if (!RegExp(
-                            r'^[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                            .hasMatch(value)) {
+                        } else if (!RegExp(r'^[a-zA-Z0-9._%±]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
                           return "Enter valid email";
                         }
                       },
@@ -207,29 +206,32 @@ class _EnteringdataState extends State<Enteringdata> {
                       textInputType: TextInputType.phone,
                       controller: PhoneNumberController,
                       hintText: "Enter User Phone",
-                      validator: (value) =>
-                      value.isEmpty ? "Enter User Phone" : null,
+                      validator: (value) => value.isEmpty ? "Enter User Phone" : null,
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                          Color(0xffFFF1D4),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                              Color(0xffFFF1D4),
+                            ),
+                          ),
+                          onPressed: () {
+                            newcontact();
+                            print(Contactmodel.Contacts);
+                          },
+                          child: Text(
+                            "Enter user",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 20,
+                              color: Color(0xff29384D),
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: () {
-                        newcontact();
-                        print(Contactmodel.Contacts);
-
-                      },
-                      child: Text(
-                        "Enter user",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 20,
-                          color: Color(0xff29384D),
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -243,18 +245,6 @@ class _EnteringdataState extends State<Enteringdata> {
 
   void newcontact() {
     if (formKey.currentState!.validate()) {
-      if (_pickedImage == null) {
-        // Show an error if no image is selected
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Please select an image"),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      // Add the new contact
       Contactmodel.Contacts.add(
         Contactmodel(
           username: UserNameController.text,
@@ -263,9 +253,7 @@ class _EnteringdataState extends State<Enteringdata> {
           image: _pickedImage,
         ),
       );
-
-      // Notify the Homescreen to update the UI
-      Navigator.pop(context, true); // Pass `true` to indicate a new contact was added
+      Navigator.pop(context, true);
     }
   }
 }

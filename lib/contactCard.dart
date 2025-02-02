@@ -24,7 +24,6 @@ class Contactcard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Image Section
               Expanded(
                 child: Stack(
                   children: [
@@ -39,7 +38,6 @@ class Contactcard extends StatelessWidget {
                         width: double.infinity,
                       ),
                     ),
-                    // Username Container
                     Positioned(
                       bottom: 10,
                       left: 10,
@@ -62,8 +60,6 @@ class Contactcard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Details Section
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Column(
